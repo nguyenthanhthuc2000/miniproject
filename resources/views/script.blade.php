@@ -1,0 +1,2 @@
+
+@yield('script_function')
