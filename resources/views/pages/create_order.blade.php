@@ -1,7 +1,7 @@
 @extends('master_layout')
 @section('content')
 <div class="box-button">
-  <h2 class="del">Giỏ hàng DEV -2</h2>
+  <h2 class="del">Giỏ hàng DEV -2 -2</h2>
   <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-success"><i class="fas fa-user-plus"></i>&nbsp Add product</button>
 </div>
 @if(Session::get('order_code'))
