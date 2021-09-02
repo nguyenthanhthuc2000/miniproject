@@ -23,13 +23,13 @@
         </tr>
       </thead>
       <tbody id="load-html">
-        
+
       </tbody>
     </table>
   </div>
   <div class="row">
     <div class="col-md-6">
-      <select class="form-select" aria-label="Default select example">
+      <select class="form-select option-customer" aria-label="Default select example">
         <option selected>Chọn khách hàng</option>
         @foreach($getCustomers as $key => $getCustomer)
         <option value="{{$getCustomer->id}}">{{$getCustomer->name}}</option>
@@ -41,11 +41,11 @@
       <tbody>
         <tr>
           <td>Tổng tiền</td>
-          <td style="text-align: end;">--------</td>
+          <td id="total" style="text-align: end;">0</td>
         </tr>
         <tr>
           <td>Thao tác</td>
-          <td style="text-align: end;"><button type="button" class="btn btn-success">Tạo đơn hàng</button></td>
+          <td style="text-align: end;"><button type="button" class="btn btn-success create-order">Tạo đơn hàng</button></td>
         </tr>
       </tbody>
     </table>
@@ -62,7 +62,7 @@
       </div>
       <form action="" method="POST" enctype="multipart/form-data" id="create-customer">
         <div class="modal-body">
-        
+
             <div class="row">
                 @foreach($getProducts as $key => $getProduct)
                 <div class="col-md-4 col-6 pt-2">
@@ -75,7 +75,7 @@
                         <p class="card-text">Giá: {{number_format($getProduct->price,'0',',','.')}} vnđ</p>
                         <button type="button" data-id="{{$getProduct->id}}" class="btn btn-success add-cart">Mua ngay</button>
                         </div>
-                    </div>  
+                    </div>
                 </div>
                 @endforeach
             </div>
@@ -90,11 +90,61 @@
 @endsection
 @section('script_function')
     <script>
-      
+
         $(document).ready(function(){
+            //load tong tien
+            loadTotal();
+            function loadTotal(){
+                $.ajaxSetup({
+                    headers : {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url : route('order-detail-manager.loadTotal'),
+                    method : 'POST',
+                    success : function(data){
+                        $('#total').html(data);
+                    }
+                })
+            }
+
+            //load gia sau khi update sl
+            function loadPrice(id , price , qty) {
+                $.ajaxSetup({
+                    headers : {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url : route('order-detail-manager.loadPrice'),
+                    method : 'POST',
+                    data : {id : id, price : price , qty : qty},
+                    success : function(data){
+                        $('#id_'+id).html(data);
+                        loadTotal();
+                    }
+                })
+            }
+
             //update gia sau khi update sl
-            $(document).on('keyup mouseup', '.input-number', function() {                                                                                                                     
-              alert($(this).val())
+            $(document).on('keyup mouseup', '.input-number', function() {
+                $.ajaxSetup({
+                    headers : {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                const id = $(this).data('id');
+                const qty = $(this).val();
+                const price = $(this).data('price');
+                $.ajax({
+                    url : route('order-detail-manager.updateQuantily'),
+                    method : 'POST',
+                    data : {id : id, qty : qty},
+                    success : function(data){
+                        loadPrice(id , price , qty);
+                    }
+                })
             });
 
             //show sp trong gio hang
@@ -106,10 +156,11 @@
                 }
               });
               $.ajax({
-                url: route('cart.getCart'),
-                method: 'POST',
-                success:function(data){
+                url : route('cart.getCart'),
+                method : 'POST',
+                success : function(data){
                   $('#load-html').html(data);
+                    loadTotal();
                 }
               })
             }
@@ -122,11 +173,12 @@
                     }
                 });
                 $.ajax({
-                  url: route('order-detail-manager.delCart'),
-                  method: 'POST',
-                  data: {id:id},
-                  success:function(data){
+                  url : route('order-detail-manager.delCart'),
+                  method : 'POST',
+                  data : {id:id},
+                  success :function(data){
                     getProductInCart();
+                      loadTotal();
                   }
                 })
               })
@@ -134,21 +186,21 @@
             //them sp vao gio hang
             $('.add-cart').click(function(){
                 $.ajaxSetup({
-                    headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    headers : {
+                    'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
                     }
                 });
                 const id = $(this).data('id');
                 const quantily = 1;
                 $.ajax({
-                    url: route('order-detail-manager.addCart'),
-                    method: 'POST',
+                    url : route('order-detail-manager.addCart'),
+                    method : 'POST',
                     data : {id:id,quantily:quantily},
-                    success:function(data){
+                    success : function(data){
                           swal("Good job!","Thêm vào giỏ hàng thành công!","success");
                           getProductInCart();
                     },
-                    error:function(data){
+                    error : function(data){
                           swal("Error!","Thử lại sau!","error");
                     }
                 })

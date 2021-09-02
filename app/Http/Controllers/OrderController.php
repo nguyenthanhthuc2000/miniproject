@@ -9,20 +9,61 @@ use App\Models\Customer;
 
 class OrderController extends Controller
 {
+    public function loadTotal(){
+        $cart = Session::get('cart');
+        $total = 0;
+        if($cart) {
+            foreach ($cart as $key => $c) {
+                $total += $c['product_quantily'] * $c['product_price'];
+            }
+        }
+        return number_format($total , '0' , ',' , '.');
+    }
+
+    public function loadPrice(Request  $request){
+        $price = number_format($request->qty * $request->price , '0' , ',' , '.');
+        return $price;
+    }
+
+    public function updateQuantily(Request $request){
+        $cart = Session::get('cart');
+        if($cart == true){
+            foreach ($cart as $key => $c){
+                if($request->id == $c['product_id']){
+                    $cart[$key] = array(
+                        'order_code' => $c['order_code'],
+                        'product_photo' => $c['product_photo'],
+                        'product_name' => $c['product_name'],
+                        'product_id' => $c['product_id'],
+                        'product_price' => $c['product_price'],
+                        'product_quantily' => $request->qty,
+                    );
+                    Session::put('cart',$cart);
+                    return 1;
+                }
+            }
+        }
+    }
+
     public function getCart(Request $request){
         $cart = Session::get('cart');
         $output = "";
-        $stt = 0;
-        foreach($cart as $key => $c){
-            $stt++;
-            $output .= '<tr><th scope="row">'.$stt.'</th>
+        if($cart){
+            $stt = 0;
+            foreach($cart as $key => $c){
+                $stt++;
+                $output .= '<tr><th scope="row">'.$stt.'</th>
             <td><img class="avatar__customer"  src="'.asset('public/uploads/products/').'/'.$c['product_photo'].'" alt=""></td>
             <td>'.$c['product_name'].'</td>
-            <td>'.number_format($c['product_price'],'0',',','.').'</td>   
-            <td> <input class="input-number" style="max-width:40px;" type="number" value="'.$c['product_quantily'].'"></input></td>
-            <td >'.number_format($c['product_price']*$c['product_quantily'],'0',',','.').'</td>
+            <td>'.number_format($c['product_price'],'0',',','.').'</td>
+            <td> <input min="1"  class="input-number" data-price="'.$c['product_price'].'" data-id="'.$c['product_id'].'" style="max-width:40px;" type="number" value="'.$c['product_quantily'].'"></input></td>
+            <td id="id_'.$c['product_id'].'">'.number_format($c['product_price']*$c['product_quantily'],'0',',','.').'</td>
             <td><button type="button" data-id="'.$c['product_id'].'" class="btn btn-danger btn-del">Xóa</button></td>
             </tr>';
+            }
+        }
+        else{
+            $output .= '<td colspan="7"><h2>Không có sản phẩm trong giỏ hàng</h2></td>';
         }
         echo $output;
     }
@@ -111,7 +152,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     /**

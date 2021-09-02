@@ -19,3 +19,6 @@ Route::post('getProduct',[ProductController::class, 'getProduct'])->name('produc
 Route::post('getCart',[OrderController::class, 'getCart'])->name('cart.getCart');
 Route::post('delCart',[OrderController::class, 'delCart'])->name('order-detail-manager.delCart');
 Route::post('addCart',[OrderController::class, 'addCart'])->name('order-detail-manager.addCart');
+Route::post('updateQuantily',[OrderController::class, 'updateQuantily'])->name('order-detail-manager.updateQuantily');
+Route::post('loadPrice',[OrderController::class, 'loadPrice'])->name('order-detail-manager.loadPrice');
+Route::post('loadTotal',[OrderController::class, 'loadTotal'])->name('order-detail-manager.loadTotal');

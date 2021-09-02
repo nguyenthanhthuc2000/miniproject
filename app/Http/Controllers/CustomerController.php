@@ -14,7 +14,7 @@ class CustomerController extends Controller
             $output .= '<tr><th scope="row">'.$customer->id.'</th>
             <td><img class="avatar__customer"  src="'.asset('public/uploads/avatars/').'/'.$customer->avatar.'" alt=""></td>
             <td>'.$customer->name.'</td>
-            <td>'.$customer->phone.'</td>   
+            <td>'.$customer->phone.'</td>
             <td>'.$customer->email.'</td>
             <td>'.$customer->address.'</td>
             </tr>';
