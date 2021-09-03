@@ -28,7 +28,7 @@
 	          <a class="nav-link" href="{{route('customer-manager.index')}}">Customers</a>
 	        </li>
 			<li class="nav-item">
-	          <a class="nav-link" href="#">Orders</a>
+	          <a class="nav-link" href="{{route('order-manager.index')}}">Orders</a>
 	        </li>
 			<li class="nav-item">
 	          <a class="nav-link" href="{{route('order-manager.create')}}">Create cart</a>
@@ -46,7 +46,7 @@
 	     	@yield('content')
 		</div>
 	</main>
-	
+
 	<script src="{{ asset('public/bootstrap/js/bootstrap.js') }}"></script>
 	<script src="{{ asset('public/vendor/js/sweetalert.js') }}"></script>
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>

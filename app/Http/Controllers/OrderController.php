@@ -6,9 +6,18 @@ use Illuminate\Http\Request;
 use Session;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Repositories\Order\OrderRepositoryInterface;
 
 class OrderController extends Controller
 {
+    protected $orderRepo;
+
+    public function  __construct(OrderRepositoryInterface $orderRepository){
+        $this->orderRepo = $orderRepository;
+    }
+
+
+
     public function loadTotal(){
         $cart = Session::get('cart');
         $total = 0;
@@ -152,7 +161,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-
+        $orders = $this->orderRepo->getAll();
+        return view('pages.order',compact('orders'));
     }
 
     /**
