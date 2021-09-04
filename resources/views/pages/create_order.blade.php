@@ -4,10 +4,7 @@
   <h2 class="del">Giỏ hàng</h2>
   <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-success"><i class="fas fa-user-plus"></i>&nbsp Add product</button>
 </div>
-@if(Session::get('order_code'))
-    code: {{Session::get('order_code')}}
-@endif
-<form action="" method="POST">
+<form action="{{route('order-manager.store')}}" method="POST" id="form-order">
   @csrf
   <div class="table-responsive" >
     <table class="table">
@@ -27,14 +24,25 @@
       </tbody>
     </table>
   </div>
+    <hr>
   <div class="row">
     <div class="col-md-6">
-      <select class="form-select option-customer" aria-label="Default select example">
-        <option selected>Chọn khách hàng</option>
+      <select class="form-select option_customer" name="option_customer" aria-label="Default select example">
+        <option selected value="">Chọn khách hàng</option>
         @foreach($getCustomers as $key => $getCustomer)
         <option value="{{$getCustomer->id}}">{{$getCustomer->name}}</option>
         @endforeach
       </select>
+    <br>
+    <div class="input-group ">
+        <span class="input-group-text" id="basic-addon1">Ngày đặt hàng</span>
+        <input type="date" class="form-control order_date" name="order_date" aria-label="" aria-describedby="basic-addon1">
+    </div>
+        <br>
+    <div class="input-group ">
+            <span class="input-group-text" id="basic-addon1">Ghi chú</span>
+            <textarea type="text" class="form-control note" name="note" aria-label="" aria-describedby="basic-addon1">Giao hàng sau giờ hành chính </textarea>
+        </div>
     </div>
     <div class="col-md-6">
     <table class="table">
@@ -92,6 +100,53 @@
     <script>
 
         $(document).ready(function(){
+            //tao hoa don
+            $('.create-order').click(function(){
+                swal({
+                        title: "Chắc chưa?",
+                        text: "Tạo đơn hàng nhé!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Ok!",
+                        closeOnConfirm: false
+                    },
+                function(isConfirm){
+                    if(isConfirm){
+                        $.ajaxSetup({
+                            headers : {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                        const customer = $('.option_customer').val();
+                        const total  = $('#total').text();
+                        const date = $('.order_date').val();
+                        const note = $('.note').val();
+                        $.ajax({
+                            url : route('order-manager.store'),
+                            method : "POST",
+                            data : {customer : customer, total : total, date : date, note : note},
+                            success : function(data){
+                                if(data == 1){
+                                    getProductInCart();
+                                    swal("Goob job" , "Tạo hóa đơn thành công chúng tôi sẽ liên hệ bạn để xác nhận đơn hàng! ", "success");
+                                    $('form')[0].reset();
+                                    $('#form-order').trigger("reset");
+                                }
+                                else{
+                                    swal("Error" , "Lỗi, thử lại sau", "error");
+                                }
+                            },
+                            error : function (data){
+                                swal("Error" , "Vui cập nhật đầy đủ thông tin ", "error");
+                            }
+                        })
+                    }
+                });
+
+
+            })
+
             //load tong tien
             loadTotal();
             function loadTotal(){

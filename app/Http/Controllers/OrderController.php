@@ -7,13 +7,15 @@ use Session;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Repositories\Order\OrderRepositoryInterface;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
     protected $orderRepo;
 
-    public function  __construct(OrderRepositoryInterface $orderRepository){
-        $this->orderRepo = $orderRepository;
+    public function  __construct(OrderRepositoryInterface $orderRepo){
+        $this->orderRepo = $orderRepo;
     }
 
 
@@ -161,7 +163,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = $this->orderRepo->getAll();
+        $orders = $this->orderRepo->getOrder();
         return view('pages.order',compact('orders'));
     }
 
@@ -190,7 +192,23 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $validatedData = $request->validate([
+            'customer' => ['required'],
+            'date' => ['required'],
+            'total' => ['required'],
+            'note' => ['required'],
+        ]);
+        $order = $this->orderRepo->storeOrder($data);
+        $order_detail =0;
+        if($order){
+            Session::forget('cart');
+            Session::forget('order_code');
+            return 1;
+        }
+        else{
+            return 0;
+        }
     }
 
     /**
