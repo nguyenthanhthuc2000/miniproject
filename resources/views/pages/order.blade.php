@@ -11,6 +11,7 @@
             <th scope="col">Tổng tiền (vnđ)</th>
             <th scope="col">Ngày đặt</th>
             <th scope="col">Ghi chú</th>
+            <th scope="col">Thao tác</th>
         </tr>
         </thead>
         <tbody>
@@ -25,6 +26,9 @@
                 <td>{{number_format($order->total, '0', ',' , '.')}} đ</td>
                 <td>{{$order->order_date}}</td>
                 <td>{{$order->note}}</td>
+                <td>
+                    <a href="" class="btn btn-primary">Xem</a>
+                </td>
             </tr>
         @endforeach
         </tbody>

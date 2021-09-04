@@ -4,7 +4,7 @@ namespace App\Repositories\Order;
 use App\Repositories\BaseRepository;
 use Session;
 
-class OrderRepository extends BaseRepository implements OrderRepositoryInterface
+class OrderRepository extends BaseRepository
 {
     //lay model tuong ung
     public function getModel()
@@ -12,12 +12,14 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         // TODO: Implement getModel() method.
         return \App\Models\Order::class;
     }
-    //method
+
+    //get
     public function getOrder()
     {
         // TODO: Implement getOrder() method.
         return $this->model->with('infoCustomer')->orderby('id','DESC')->get();
     }
+
     //store
     public function storeOrder($data){
         $cart = Session::get('cart');

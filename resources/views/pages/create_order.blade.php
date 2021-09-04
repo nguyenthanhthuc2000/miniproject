@@ -156,7 +156,7 @@
                     }
                 });
                 $.ajax({
-                    url : route('order-detail-manager.loadTotal'),
+                    url : route('order-manager.loadTotal'),
                     method : 'POST',
                     success : function(data){
                         $('#total').html(data);
@@ -172,7 +172,7 @@
                     }
                 });
                 $.ajax({
-                    url : route('order-detail-manager.loadPrice'),
+                    url : route('order-manager.loadPrice'),
                     method : 'POST',
                     data : {id : id, price : price , qty : qty},
                     success : function(data){
@@ -193,7 +193,7 @@
                 const qty = $(this).val();
                 const price = $(this).data('price');
                 $.ajax({
-                    url : route('order-detail-manager.updateQuantily'),
+                    url : route('order-manager.updateQuantily'),
                     method : 'POST',
                     data : {id : id, qty : qty},
                     success : function(data){
@@ -228,7 +228,7 @@
                     }
                 });
                 $.ajax({
-                  url : route('order-detail-manager.delCart'),
+                  url : route('order-manager.delCart'),
                   method : 'POST',
                   data : {id:id},
                   success :function(data){
@@ -248,7 +248,7 @@
                 const id = $(this).data('id');
                 const quantily = 1;
                 $.ajax({
-                    url : route('order-detail-manager.addCart'),
+                    url : route('order-manager.addCart'),
                     method : 'POST',
                     data : {id:id,quantily:quantily},
                     success : function(data){

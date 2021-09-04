@@ -6,16 +6,20 @@ use Illuminate\Http\Request;
 use Session;
 use App\Models\Product;
 use App\Models\Customer;
-use App\Repositories\Order\OrderRepositoryInterface;
+//use App\Repositories\Order\OrderRepositoryInterface;
+use App\Repositories\Order\OrderRepository;
+use App\Repositories\Order\OrderDetailRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
     protected $orderRepo;
+    protected $orderDetailRepo;
 
-    public function  __construct(OrderRepositoryInterface $orderRepo){
+    public function  __construct(OrderRepository $orderRepo, OrderDetailRepository $orderDetailRepo){
         $this->orderRepo = $orderRepo;
+        $this->orderDetailRepo = $orderDetailRepo;
     }
 
 
@@ -190,6 +194,7 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         $data = $request->all();
@@ -200,11 +205,16 @@ class OrderController extends Controller
             'note' => ['required'],
         ]);
         $order = $this->orderRepo->storeOrder($data);
-        $order_detail =0;
         if($order){
-            Session::forget('cart');
-            Session::forget('order_code');
-            return 1;
+            $orderDetail = $this->orderDetailRepo->storeOrderDetail();
+            if($orderDetail){
+                Session::forget('cart');
+                Session::forget('order_code');
+                return 1;
+            }
+            else{
+                return 0;
+            }
         }
         else{
             return 0;

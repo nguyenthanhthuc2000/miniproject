@@ -16,7 +16,8 @@ class AppServiceProvider extends ServiceProvider
         //tao repository
         $this->app->singleton(
             \App\Repositories\Order\OrderRepositoryInterface::class,
-            \App\Repositories\Order\OrderRepository::class
+            \App\Repositories\Order\OrderRepository::class,
+            \App\Repositories\Order\OrderDetailRepository::class,
         );
     }
 

@@ -12,7 +12,6 @@ class Order extends Model
     protected $fillable = ['id_customer','order_code','quantily','total','order_date','note'];
     protected $primaryKey = 'id';
     public  function  infoCustomer(){
-        /////////////////////////////// model ///////// khoa lk cua model ////// khoa lk cua model hien tai
         return $this->hasOne(Customer::class, 'id', 'id_customer');
     }
 }
