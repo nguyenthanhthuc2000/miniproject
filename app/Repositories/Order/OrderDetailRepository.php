@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Order;
 
 use App\Repositories\BaseRepository;
@@ -12,11 +13,13 @@ class OrderDetailRepository extends BaseRepository
         // TODO: Implement getModel() method.
         return \App\Models\OrderDetail::class;
     }
+
     //
-    public function storeOrderDetail(){
+    public function storeOrderDetail()
+    {
         $cart = Session::get('cart');
-        if($cart){
-            foreach ($cart as $key => $c){
+        if ($cart) {
+            foreach ($cart as $key => $c) {
                 $order_detail = array(
                     'order_code' => Session::get("order_code"),
                     'id_product' => $c["product_id"],
