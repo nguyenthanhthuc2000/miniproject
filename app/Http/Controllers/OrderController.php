@@ -112,7 +112,11 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function addCart(Request $request){
-        $order_code = Session::get('order_code');
+        if(!Session::get('order_code')){
+            $order_code = substr(md5(microtime()),rand(0,26),8);
+            // dd($order_code);
+            Session::put('order_code',$order_code);
+        }
         $product = Product::find($request->id);
         $cart = Session::get('cart');
 
